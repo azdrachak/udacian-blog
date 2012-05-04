@@ -10,7 +10,7 @@ class MainHandler(webapp2.RequestHandler):
 
 class Rot13Encryption(webapp2.RequestHandler):
     def write_form(self, data = "Type in text to encrypt"):
-        self.response.out.write(forms.form_encrypt % {"data": data})
+        self.response.out.write(forms.form_encrypt % {"data": validation.escape_html(data)})
 
     def get(self):
         self.write_form()
@@ -58,10 +58,10 @@ class UserSignUp(webapp2.RequestHandler):
                         error_password = "",
                         error_verify = "",
                         error_email = ""):
-        self.response.out.write(forms.form_signup % {'username': username,
-                                                     'password': password,
-                                                     'verify': verify,
-                                                     'email': email,
+        self.response.out.write(forms.form_signup % {'username': validation.escape_html(username),
+                                                     'password': validation.escape_html(password),
+                                                     'verify': validation.escape_html(verify),
+                                                     'email': validation.escape_html(email),
                                                      'error_username': error_username,
                                                      'error_password': error_password,
                                                      'error_verify': error_verify,
