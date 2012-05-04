@@ -1,6 +1,8 @@
 __author__ = 'Aliaksandr_Zdrachak'
 
-import webapp2, forms, validation, encryption
+import webapp2
+
+import forms, validation, encryption
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
