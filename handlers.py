@@ -82,13 +82,20 @@ class UserSignUp(webapp2.RequestHandler):
             error_username, error_password, error_verify, error_email = '', '', '', ''
             if not username:
                 error_username = "That's not a valid username."
-            elif not password:
+            if not password:
                 error_password = "That wasn't a valid password."
-            elif entered_password != entered_verify:
+            if entered_password != entered_verify:
                 error_verify = "Your passwords didn't match."
-            elif entered_email and not email:
+            if entered_email and not email:
                 error_email = "That's not a valid email."
-            self.write_form(entered_username, '', '', entered_email, error_username)
+            self.write_form(entered_username,
+                            '',
+                            '',
+                            entered_email,
+                            error_username,
+                            error_password,
+                            error_verify,
+                            error_email)
         else:
             self.redirect('/welcome?username='+entered_username)
 
