@@ -8,5 +8,7 @@ app = webapp2.WSGIApplication([('/', handlers.MainHandler),
                                 ('/rot13', handlers.Rot13Encryption),
                                 ('/signup', handlers.UserSignUp),
                                 ('/welcome', handlers.UserWelcome),
-                                ('/ascii', handlers.ASCII_Page)],
+                                ('/ascii', handlers.ASCII_Page),
+                                ('/blog', handlers.BlogFront),
+                                ('/blog/newpost', handlers.NewPost)],
                               debug=True)

@@ -142,7 +142,7 @@ class ASCII_Page(Handler):
         arts = db.GqlQuery("SELECT * FROM Art ORDER BY date DESC")
         self.render("front.html", title = title, art = art, error = error, arts = arts)
 
-    def get(self):
+    def get(self, *args, **kwargs):
         self.render_front()
 
     def post(self):
@@ -156,3 +156,12 @@ class ASCII_Page(Handler):
         else:
             error = "We need both a title and some artwork"
             self.render_front(title, art, error)
+
+
+class BlogFront(Handler):
+    def get(self, *args, **kwargs):
+        self.write("Here well be blog posts")
+
+class NewPost(Handler):
+    def get(self, *args, **kwargs):
+        self.render("newpost.html")
