@@ -15,6 +15,7 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.out.write("Hello to all")
 
+
 class Rot13Encryption(webapp2.RequestHandler):
     def write_form(self, data = "Type in text to encrypt"):
         self.response.out.write(forms.form_encrypt % {"data": validation.escape_html(data)})
@@ -25,6 +26,7 @@ class Rot13Encryption(webapp2.RequestHandler):
     def post(self):
         to_encrypt = self.request.get("text")
         self.write_form(encryption.rot13(to_encrypt))
+
 
 class BirthDateHandler(webapp2.RequestHandler):
     def write_form(self, error="", month="", day="", year=""):
@@ -52,9 +54,11 @@ class BirthDateHandler(webapp2.RequestHandler):
         else:
             self.redirect("/thanks")
 
+
 class ThanksHandler(webapp2.RequestHandler):
     def get(self):
         self.response.out.write("Thanks! That's a totally valid day!")
+
 
 class UserSignUp(webapp2.RequestHandler):
     def write_form(self, username = "",
@@ -114,11 +118,18 @@ class UserWelcome(webapp2.RequestHandler):
         name = self.request.get('username')
         self.response.out.write("Welcome, %s!"%name)
 
+
+class Art(db.Model):
+    title = db.StringProperty(required= True)
+    art = db.TextProperty(required= True)
+    date = db.DateTimeProperty(auto_now_add= True)
+
+
 class Handler(webapp2.RedirectHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 
-    def render_str(self, template, *params):
+    def render_str(self, template, **params):
         t = jinja_env.get_template(template)
         return t.render(params)
 
@@ -127,5 +138,21 @@ class Handler(webapp2.RedirectHandler):
 
 
 class ASCII_Page(Handler):
+    def render_front(self, title ="", art = "", error = ""):
+        arts = db.GqlQuery("SELECT * FROM Art ORDER BY date DESC")
+        self.render("front.html", title = title, art = art, error = error, arts = arts)
+
     def get(self):
-        self.write('asciichan!')
+        self.render_front()
+
+    def post(self):
+        title = self.request.get("title")
+        art = self.request.get("art")
+
+        if title and art:
+            a = Art(title = title, art = art)
+            a.put()
+            self.redirect("/ascii")
+        else:
+            error = "We need both a title and some artwork"
+            self.render_front(title, art, error)
