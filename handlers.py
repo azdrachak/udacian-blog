@@ -158,10 +158,36 @@ class ASCII_Page(Handler):
             self.render_front(title, art, error)
 
 
+class Posts(db.Model):
+    subject = db.StringProperty(required= True)
+    content = db.TextProperty(required= True)
+    date = db.DateTimeProperty(auto_now_add= True)
+
 class BlogFront(Handler):
     def get(self, *args, **kwargs):
-        self.write("Here well be blog posts")
+        posts = db.GqlQuery("SELECT * FROM Posts ORDER BY date DESC")
+        self.render("blog_front.html", posts = posts)
 
 class NewPost(Handler):
+    def render_post(self, subject = "", post = "", error = ""):
+        self.render("newpost.html", subject = subject, post = post, error = error)
+
     def get(self, *args, **kwargs):
         self.render("newpost.html")
+
+    def post(self):
+        title = self.request.get("subject")
+        post = self.request.get("content")
+
+        if title and post:
+            p = Posts(subject = title, content = post)
+            post_key = p.put()
+            self.redirect("/blog/%d" % post_key.id())
+        else:
+            error = "There should be both Title and Post entered"
+            self.render_post(title, post, error)
+
+class PermaLink(Handler):
+    def get(self, post_id):
+        p = Posts.get_by_id(int(post_id))
+        self.render("post.html", date = p.date, subject = p.subject, content = p.content)

@@ -10,5 +10,6 @@ app = webapp2.WSGIApplication([('/', handlers.MainHandler),
                                 ('/welcome', handlers.UserWelcome),
                                 ('/ascii', handlers.ASCII_Page),
                                 ('/blog', handlers.BlogFront),
-                                ('/blog/newpost', handlers.NewPost)],
+                                ('/blog/newpost', handlers.NewPost),
+                                ('/blog/(\d+)', handlers.PermaLink)],
                               debug=True)
